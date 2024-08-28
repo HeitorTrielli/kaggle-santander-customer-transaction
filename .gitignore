@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+datasets/
+*.csv
+*.zip
+house-prices-advanced-regression-techniques/
