@@ -31,7 +31,7 @@ sgd_param_grid = [
 ]
 
 sgd_cv = GridSearchCV(
-    estimator=sgd_clf, param_grid=sgd_param_grid, scoring="accuracy", verbose=10
+    estimator=sgd_clf, param_grid=sgd_param_grid, scoring="roc_auc", verbose=10
 )
 
 sgd_cv.fit(train_feats, train_label)
@@ -39,7 +39,7 @@ sgd_cv.best_params_
 sgd_cv.best_estimator_
 
 sgd_results = pd.DataFrame(sgd_cv.cv_results_)
-sgd_results.sort_values("mean_test_score", ascending=False)  # best_score = 0.835001
+sgd_results.sort_values("mean_test_score", ascending=False)
 
 raw_test_feats["target"] = sgd_cv.best_estimator_.predict(test_feats)
 sgd_submission = raw_test_feats[["ID_code", "target"]]
@@ -57,7 +57,7 @@ knn_param_grid = [
 ]
 
 knn_cv = GridSearchCV(
-    estimator=knn_clf, param_grid=knn_param_grid, scoring="accuracy", verbose=10
+    estimator=knn_clf, param_grid=knn_param_grid, scoring="roc_auc", verbose=10
 )
 
 knn_cv.fit(train_feats, train_label)
@@ -65,7 +65,7 @@ knn_cv.best_params_
 knn_cv.best_estimator_
 
 knn_results = pd.DataFrame(knn_cv.cv_results_)
-knn_results.sort_values("mean_test_score", ascending=False)  # best_score = 0.827167
+knn_results.sort_values("mean_test_score", ascending=False)
 
 
 raw_test_feats["target"] = knn_cv.best_estimator_.predict(test_feats)
@@ -81,7 +81,7 @@ rf_clf = RandomForestClassifier(random_state=42, n_jobs=8)
 
 rf_param_grid = [
     {
-        "n_estimators": range(1, 100, 10),
+        "n_estimators": [100, 150, 250],
         "criterion": ["gini", "entropy", "log_loss"],
         "min_samples_split": np.arange(0.1, 0.4, 0.1),
         "oob_score": [True],
@@ -89,7 +89,7 @@ rf_param_grid = [
 ]
 
 rf_cv = GridSearchCV(
-    estimator=rf_clf, param_grid=rf_param_grid, scoring="accuracy", verbose=10
+    estimator=rf_clf, param_grid=rf_param_grid, scoring="roc_auc", verbose=10, cv=3
 )
 
 rf_cv.fit(train_feats, train_label)
@@ -97,7 +97,7 @@ rf_cv.best_params_
 rf_cv.best_estimator_
 
 rf_results = pd.DataFrame(rf_cv.cv_results_)
-rf_results.sort_values("mean_test_score", ascending=False)  # best_score = 0.823790
+rf_results.sort_values("mean_test_score", ascending=False)
 
 raw_test_feats["target"] = rf_cv.best_estimator_.predict(test_feats)
 rf_submission = raw_test_feats[["ID_code", "target"]].rename(
